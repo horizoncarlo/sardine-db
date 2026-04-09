@@ -1,0 +1,14 @@
+{
+  "name": "sardine-db",
+  "version": "0.1",
+  "private": true,
+  "scripts": {
+    "go": "json-server sardine-db.json"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "json-server": "^1.0.0-beta.15"
+  }
+}

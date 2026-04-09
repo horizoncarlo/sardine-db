@@ -1,0 +1,15 @@
+{
+  "sardines": [
+    {
+      "id": "1",
+      "name": "Safi Sardine Balls",
+      "date": "2026-02-24T21:00:00.000Z",
+      "image": "/uploads/sardine-balls.jpg",
+      "price": "2.00",
+      "owner": "Carlo",
+      "location": "Mediterranean Market",
+      "notes": "Better than they look that's for sure"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}

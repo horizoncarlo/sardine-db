@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sardine DB - List</title>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+  <link rel="stylesheet" href="https://matcha.mizu.sh/matcha.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs/dist/cdn.min.js"></script>
+  
+  <style>
+    :root {
+      --ct-width: 95%;
+    }
+    
+    img {
+      max-width: 150px;
+    }
+    
+    td {
+      text-align: center;
+    }
+    
+    .flip-text {
+      display: inline-block;
+      transform: scaleX(-1);
+    }
+  </style>
+</head>
+<body x-data="indexApp()" x-init="load()">
+
+<h1 class="centered">𓆝 𓆟 𓆞 𓆟 𓆝&nbsp;Sardine DB&nbsp;<span class="flip-text">𓆝 𓆟 𓆞 𓆟 𓆝</span></h1>
+
+<p class="centered">
+  <button @click="window.location.href='manage.html'" class="active">Create New</button>
+</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Owner</th>
+      <th>Date</th>
+      <th>Image</th>
+      <th>Location</th>
+      <th>Notes</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <template x-for="s in sardines" :key="s.id">
+      <tr>
+        <td x-text="s.id"></td>
+        <td x-text="s.name"></td>
+        <td x-text="s.price"></td>
+        <td x-text="s.owner"></td>
+        <td x-text="s.date"></td>
+        <td>
+          <template x-if="s.image">
+            <a :href="s.image" target="_blank">
+              <img :src="s.image">
+            </a>
+          </template>
+        </td>
+        <td x-text="s.location"></td>
+        <td x-text="s.notes"></td>
+        <td>
+          <button @click="window.location.href='manage.html?id=' + s.id">Edit</button>
+          <button @click="deleteProcess(s.id)" :class="isConfirmedDelete ? 'danger' : 'severe'" x-text="isConfirmedDelete ? 'Confirm' : 'Delete'"></button>
+        </td>
+      </tr>
+    </template>
+  </tbody>
+</table>
+
+<script>
+function indexApp() {
+  return {
+    sardines: [],
+    isConfirmedDelete: false,
+    async load() {
+      const res = await fetch(`${window.location.origin}/sardines`);
+      this.sardines = await res.json();
+    },
+    async remove(id) {
+      await fetch(`${window.location.origin}/sardines/${id}`, {
+        method: "DELETE"
+      });
+      this.load();
+    },
+    deleteProcess(toDeleteId) {
+      if (!toDeleteId) {
+        console.warn("Tried to delete but ID was given", toDeleteId);
+        return;
+      }
+      
+      if (this.isConfirmedDelete) {
+        this.remove(toDeleteId);
+      }
+      this.isConfirmedDelete = !this.isConfirmedDelete;
+    }
+  }
+}
+</script>
+
+</body>
+</html>

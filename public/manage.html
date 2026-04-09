@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sardine DB - Manage</title>
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1" />
+  <link rel="stylesheet" href="https://matcha.mizu.sh/matcha.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs/dist/cdn.min.js"></script>
+</head>
+<body x-data="managePage()" x-init="init()">
+
+<h1 x-text="isEdit ? 'Edit Sardine' : 'Create Sardine'"></h1>
+
+<form @submit.prevent="submit">
+  <p><input x-model="form.name" placeholder="Name" required></p>
+  <p><input x-model="form.price" placeholder="Price" required></p>
+  <p><input x-model="form.owner" placeholder="Owner" required></p>
+
+  <p><input x-model="form.date" placeholder="ISO Date" required></p>
+  <p><input x-model="form.location" placeholder="Location"></p>
+  <p><input x-model="form.notes" placeholder="Notes"></p>
+
+  <p>
+    <button type="submit" x-text="isEdit ? 'Save' : 'Create'" class="success"></button>
+    <b>&nbsp;|&nbsp;</b>
+    <button @click="window.location.href='index.html'" class="muted">Back</button>
+  </p>
+</form>
+
+<script>
+function managePage() {
+  return {
+    id: null,
+    isEdit: false,
+    form: {
+      name: "",
+      price: "",
+      owner: "",
+      date: "",
+      location: "",
+      notes: ""
+    },
+
+    async init() {
+      const params = new URLSearchParams(window.location.search);
+      this.id = params.get("id");
+
+      if (this.id) {
+        this.isEdit = true;
+        const res = await fetch(`${window.location.origin}/sardines/${this.id}`);
+        const data = await res.json();
+
+        this.form = data;
+      }
+    },
+
+    async submit() {
+      if (this.isEdit) {
+        await fetch(`${window.location.origin}/sardines/${this.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.form)
+        });
+      } else {
+        await fetch(`${window.location.origin}/sardines`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(this.form)
+        });
+      }
+
+      window.location.href = "index.html";
+    }
+  }
+}
+</script>
+
+</body>
+</html>
